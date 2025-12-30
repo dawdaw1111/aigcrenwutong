@@ -820,7 +820,7 @@
       // 从CSV加载所有订单数据
       async function loadAllOrders() {
         try {
-          const response = await fetch("data/任务统计表.csv");
+          const response = await fetch("data/任务统计表aigc.csv");
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }

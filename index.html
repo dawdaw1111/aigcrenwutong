@@ -1,0 +1,2562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>逻纪任务通</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="shortcut icon" href="./img/favicon.ico" type="image/x-icon" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        font-family: "Microsoft YaHei", Arial, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+        color: #333;
+        min-height: 100vh;
+      }
+
+      .header {
+        background: linear-gradient(90deg, #4a90e2 0%, #5e72eb 100%);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 20px 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-size: 28px;
+        font-weight: bold;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .logo i {
+        font-size: 32px;
+      }
+
+      .search-bar {
+        display: flex;
+        width: 400px;
+        position: relative;
+      }
+
+      .search-bar input {
+        flex: 1;
+        padding: 12px 20px 12px 40px;
+        border: none;
+        border-radius: 30px 0 0 30px;
+        outline: none;
+        font-size: 14px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      .search-bar input:focus {
+        box-shadow: 0 2px 12px rgba(74, 144, 226, 0.3);
+        transform: scale(1.02);
+      }
+
+      .search-bar i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #777;
+      }
+
+      .search-bar button {
+        background: #ff6b6b;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 0 30px 30px 0;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .search-bar button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+
+      .search-bar button:hover::before {
+        transform: translateX(100%);
+      }
+
+      .search-bar button:hover {
+        background: #ff5252;
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .main-content {
+        padding: 30px 0;
+      }
+
+      .page-title {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 25px;
+        color: #2c3e50;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
+        padding-left: 15px;
+        position: relative;
+      }
+
+      .page-title::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 30px;
+        background: linear-gradient(135deg, #4a90e2 0%, #5e72eb 100%);
+        border-radius: 2px;
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.7;
+        }
+      }
+
+      .page-title i {
+        color: #4a90e2;
+        font-size: 28px;
+        background: linear-gradient(
+          135deg,
+          rgba(74, 144, 226, 0.1) 0%,
+          rgba(94, 114, 235, 0.1) 100%
+        );
+        padding: 12px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(74, 144, 226, 0.15);
+        transition: all 0.3s ease;
+      }
+
+      .page-title:hover i {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 6px 16px rgba(74, 144, 226, 0.25);
+      }
+
+      .page-title span {
+        transition: all 0.3s ease;
+      }
+
+      .page-title:hover span {
+        transform: translateX(5px);
+      }
+
+      .stats-container {
+        display: flex;
+        gap: 24px;
+        margin-bottom: 30px;
+      }
+
+      .stat-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+        border-radius: 16px;
+        padding: 30px 25px;
+        flex: 1;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #f0f4ff;
+      }
+
+      .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #4a90e2 0%, #5e72eb 100%);
+      }
+
+      .stat-card:nth-child(2)::before {
+        background: linear-gradient(90deg, #52c41a 0%, #73d13d 100%);
+      }
+
+      .stat-card:nth-child(3)::before {
+        background: linear-gradient(90deg, #ff6b6b 0%, #ff8787 100%);
+      }
+
+      .stat-card::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          120deg,
+          transparent,
+          rgba(255, 255, 255, 0.4),
+          transparent
+        );
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+      }
+
+      .stat-card:hover::after {
+        transform: translateX(100%);
+      }
+
+      .stat-card:hover {
+        transform: translateY(-10px) scale(1.03);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .stat-card .stat-icon,
+      .stat-card .stat-info {
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 1;
+      }
+
+      .stat-card:hover .stat-icon {
+        transform: scale(1.15) rotate(5deg);
+      }
+
+      .stat-card:hover .stat-info h3 {
+        transform: translateX(10px);
+      }
+
+      .stat-card:hover .stat-info p {
+        opacity: 1;
+      }
+
+      .stat-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        position: relative;
+      }
+
+      .stat-icon::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 100%;
+        border-radius: 16px;
+        filter: blur(10px);
+        opacity: 0.3;
+        transition: all 0.3s ease;
+      }
+
+      .stat-card:hover .stat-icon::before {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(1.1);
+      }
+
+      .stat-icon.blue {
+        background: linear-gradient(
+          135deg,
+          rgba(74, 144, 226, 0.15) 0%,
+          rgba(94, 114, 235, 0.15) 100%
+        );
+        color: #4a90e2;
+      }
+
+      .stat-icon.blue::before {
+        background: linear-gradient(135deg, #4a90e2 0%, #5e72eb 100%);
+      }
+
+      .stat-icon.green {
+        background: linear-gradient(
+          135deg,
+          rgba(82, 196, 26, 0.15) 0%,
+          rgba(115, 209, 61, 0.15) 100%
+        );
+        color: #52c41a;
+      }
+
+      .stat-icon.green::before {
+        background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+      }
+
+      .stat-icon.orange {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 107, 107, 0.15) 0%,
+          rgba(255, 135, 135, 0.15) 100%
+        );
+        color: #ff6b6b;
+      }
+
+      .stat-icon.orange::before {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ff8787 100%);
+      }
+
+      .stat-info h3 {
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: #2c3e50;
+        line-height: 1;
+      }
+
+      .stat-info p {
+        color: #64748b;
+        font-size: 16px;
+        font-weight: 500;
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+      }
+
+      .filters {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        margin-bottom: 20px;
+        border: 1px solid #f0f2f5;
+      }
+
+      .filter-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #f0f2f5;
+      }
+
+      .filter-header h2 {
+        font-size: 18px;
+        color: #2c3e50;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .filter-header h2 i {
+        color: #4a90e2;
+        font-size: 20px;
+      }
+
+      .filter-actions button {
+        background: linear-gradient(90deg, #4a90e2 0%, #5e72eb 100%);
+        color: white;
+        border: none;
+        padding: 9px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 6px rgba(74, 144, 226, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .filter-actions button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3);
+      }
+
+      .filter-group {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        align-items: flex-end;
+      }
+
+      .filter-item {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1;
+        min-width: 160px;
+        max-width: 220px;
+      }
+
+      .filter-item label {
+        font-weight: 600;
+        color: #57606f;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .filter-item select {
+        padding: 12px 16px;
+        border: 2px solid #e8eef5;
+        border-radius: 8px;
+        background: white;
+        font-size: 14px;
+        width: 100%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px;
+      }
+
+      .filter-item select:hover {
+        border-color: #d0e1f2;
+      }
+
+      .filter-item select:focus {
+        border-color: #4a90e2;
+        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        outline: none;
+      }
+
+      .order-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 25px;
+      }
+
+      .order-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        transform-style: preserve-3d;
+        cursor: pointer;
+      }
+
+      .order-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      /* 卡片内部元素动画 */
+      .order-card .card-header,
+      .order-card .card-body,
+      .order-card .card-footer {
+        transition: all 0.3s ease;
+      }
+
+      .order-card:hover .card-header {
+        background-color: #f8f9ff;
+      }
+
+      .order-card .order-title {
+        transition: color 0.3s ease;
+      }
+
+      .order-card:hover .order-title {
+        color: #4a90e2;
+      }
+
+      /* 收藏按钮动画 */
+      .bookmark {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background: #f1f2f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: #7f8c8d;
+        border: none;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .bookmark::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+
+      .bookmark:hover::before {
+        transform: translateX(100%);
+      }
+
+      .bookmark:hover {
+        background: #ff6b6b;
+        color: white;
+        transform: scale(1.1);
+      }
+
+      .bookmark.bookmarked {
+        background: #ff6b6b;
+        color: white;
+        animation: pulse 0.5s ease;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.2);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .card-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        z-index: 10;
+      }
+
+      .badge-new {
+        background: #ff6b6b;
+        color: white;
+      }
+
+      .card-header {
+        padding: 25px 25px 20px;
+        border-bottom: 1px solid #f1f2f6;
+        position: relative;
+      }
+
+      .order-title {
+        font-size: 19px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: #2c3e50;
+        line-height: 1.4;
+      }
+
+      .order-type {
+        display: inline-block;
+        background: linear-gradient(90deg, #e8f4fd 0%, #d6e9ff 100%);
+        color: #4a90e2;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+
+      .card-body {
+        padding: 25px;
+        flex: 1;
+      }
+
+      .info-item {
+        display: flex;
+        margin-bottom: 15px;
+        align-items: center;
+      }
+
+      .info-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .info-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        color: #7f8c8d;
+        font-size: 16px;
+      }
+
+      .info-content {
+        flex: 1;
+      }
+
+      .info-label {
+        font-size: 13px;
+        color: #95a5a6;
+        margin-bottom: 3px;
+      }
+
+      .info-value {
+        font-size: 15px;
+        font-weight: 500;
+        color: #2c3e50;
+      }
+
+      .status-active {
+        color: #52c41a;
+        font-weight: 600;
+      }
+
+      .status-completed {
+        color: #95a5a6;
+        font-weight: 600;
+      }
+
+      .progress-container {
+        margin-top: 15px;
+        background: #f1f2f6;
+        border-radius: 10px;
+        height: 8px;
+        overflow: hidden;
+      }
+
+      .progress-bar {
+        height: 100%;
+        border-radius: 10px;
+      }
+
+      .progress-active {
+        background: linear-gradient(90deg, #52c41a 0%, #7be245 100%);
+        width: 65%;
+      }
+
+      .progress-completed {
+        background: linear-gradient(90deg, #95a5a6 0%, #bdc3c7 100%);
+        width: 100%;
+      }
+
+      .card-footer {
+        padding: 20px 25px;
+        background: #fafbff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid #f1f2f6;
+      }
+
+      .publish-time {
+        font-size: 13px;
+        color: #95a5a6;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 10px;
+      }
+
+      .view-details {
+        background: linear-gradient(90deg, #4a90e2 0%, #5e72eb 100%);
+        color: white;
+        border: none;
+        padding: 9px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .view-details::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+
+      .view-details:hover::before {
+        transform: translateX(100%);
+      }
+
+      .view-details:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 15px rgba(74, 144, 226, 0.4);
+      }
+
+      .bookmark {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background: #f1f2f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: #7f8c8d;
+        border: none;
+      }
+
+      .bookmark:hover {
+        background: #ff6b6b;
+        color: white;
+      }
+
+      .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 40px;
+        gap: 10px;
+      }
+
+      .pagination button {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        border: 1px solid #e1e5eb;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+      }
+
+      .pagination button.active {
+        background: #4a90e2;
+        color: white;
+        border-color: #4a90e2;
+      }
+
+      .pagination button:hover:not(.active) {
+        background: #f8f9fa;
+      }
+
+      .pagination-info {
+        font-size: 14px;
+        color: #57606f;
+      }
+
+      .pagination {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 25px 0;
+        padding: 15px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        gap: 8px;
+      }
+
+      .pagination-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .pagination button {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        border: 1px solid #e1e5eb;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+      }
+
+      .pagination button.active {
+        background: #4a90e2;
+        color: white;
+        border-color: #4a90e2;
+      }
+
+      .pagination button:hover:not(.active) {
+        background: #f8f9fa;
+      }
+
+      .pagination button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      #pageNumbers {
+        display: flex;
+        gap: 5px;
+      }
+
+      #pageNumbers button {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        border: 1px solid #e1e5eb;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+      }
+
+      #pageNumbers button.active {
+        background: #4a90e2;
+        color: white;
+        border-color: #4a90e2;
+      }
+
+      .kanban {
+        cursor: pointer;
+        border-radius: 5px;
+      }
+      .kanban:hover {
+        background-color: #c3c4c7;
+      }
+
+      /* 表格样式 */
+      .table-section {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        margin-top: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      }
+
+      .table-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #2c3e50;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .table-title i {
+        color: #4a90e2;
+        font-size: 20px;
+      }
+
+      .table-container {
+        overflow-x: auto;
+        overflow-y: hidden;
+        border-radius: 8px;
+        border: 1px solid #f0f2f5;
+        position: relative;
+        height: 400px;
+      }
+
+      .result-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+
+      .result-table th {
+        background: linear-gradient(135deg, #f8f9ff 0%, #e4edf5 100%);
+        color: #2c3e50;
+        font-weight: 600;
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 2px solid #4a90e2;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .result-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #f0f2f5;
+        color: #57606f;
+      }
+
+      .result-table tr:hover {
+        background-color: #f8f9ff;
+        transition: background-color 0.2s ease;
+      }
+
+      .result-table tr:nth-child(even) {
+        background-color: #fafbff;
+      }
+
+      /* 滚动动画容器 */
+      .scroll-container {
+        animation: scrollUp 20s linear infinite;
+      }
+
+      /* 无缝滚动动画 */
+      @keyframes scrollUp {
+        0% {
+          transform: translateY(0);
+        }
+        100% {
+          transform: translateY(-50%);
+        }
+      }
+
+      /* 当鼠标悬停时暂停滚动 */
+      .table-container:hover .scroll-container {
+        animation-play-state: paused;
+      }
+
+      /* 确保表头固定 */
+      .scroll-wrapper {
+        position: relative;
+      }
+
+      /* 滚动表格样式 */
+      .result-table-scroll {
+        border-top: none;
+        margin-top: -1px;
+        width: 100%;
+        table-layout: fixed;
+      }
+
+      /* 隐藏滚动表格的表头 */
+      .result-table-scroll thead {
+        display: none;
+      }
+
+      /* 确保两个表格列宽一致 */
+      .result-table {
+        table-layout: fixed;
+      }
+
+      /* 确保表头和表体的列宽完全匹配 */
+      .result-table th,
+      .result-table td {
+        width: auto;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      /* 调整表格内边距，确保表头和表体对齐 */
+      .result-table-scroll td {
+        border-top: none;
+        padding: 12px 15px;
+      }
+
+      /* 响应式表格 */
+      @media (max-width: 768px) {
+        .order-list {
+          grid-template-columns: 1fr;
+        }
+
+        .header-content {
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        .search-bar {
+          width: 100%;
+        }
+
+        .page-title {
+          font-size: 24px;
+        }
+
+        .page-title i {
+          font-size: 20px;
+          padding: 10px;
+        }
+
+        .page-title::before {
+          height: 24px;
+        }
+
+        .stats-container {
+          flex-direction: column;
+        }
+
+        .filter-group {
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        .filter-item {
+          min-width: 100%;
+          max-width: 100%;
+        }
+
+        .filter-item select {
+          min-width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container">
+        <div class="header-content">
+          <div class="logo">
+            <img
+              src="img/逻纪3.png"
+              alt="逻纪任务通"
+              style="height: 40px; width: auto"
+            />|
+            <span>逻纪任务通</span>
+          </div>
+          <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="搜索商单、技能或公司..." />
+            <button>搜索</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="main-content">
+        <h1 class="page-title">
+          <i class="fas fa-list-alt"></i>
+          <span>新发布任务</span>
+          <!-- <span class="kanban" id="kanban">已接商单看板</span> -->
+        </h1>
+
+        <div class="stats-container">
+          <div class="stat-card">
+            <div class="stat-icon blue">
+              <i class="fas fa-tasks"></i>
+            </div>
+            <div class="stat-info">
+              <h3>128</h3>
+              <p>总任务数</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">
+              <i class="fas fa-play-circle"></i>
+            </div>
+            <div class="stat-info">
+              <h3>86</h3>
+              <p>进行中</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon orange">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-info">
+              <h3>42</h3>
+              <p>已完成</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="filters">
+          <div class="filter-header">
+            <h2><i class="fas fa-filter"></i> 筛选你感兴趣的任务</h2>
+            <div class="filter-actions">
+              <button><i class="fas fa-sync-alt"></i> 重置</button>
+            </div>
+          </div>
+          <div class="filter-group">
+            <div class="filter-item">
+              <label>需求类型:</label>
+              <select id="typeFilter">
+                <option value="">全部类型</option>
+                <!-- 选项将通过JavaScript动态生成 -->
+              </select>
+            </div>
+            <div class="filter-item">
+              <label>商单状态:</label>
+              <select id="statusFilter">
+                <option value="">全部状态</option>
+                <option value="进行中">进行中</option>
+                <option value="已完成">已完成</option>
+                <option value="待开始">待开始</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <label>预算范围:</label>
+              <select id="budgetFilter">
+                <option value="">不限</option>
+                <option value="low">¥0 - ¥5,000</option>
+                <option value="medium">¥5,000 - ¥20,000</option>
+                <option value="high">¥20,000+</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <label>发布时间:</label>
+              <select id="timeFilter">
+                <option value="">不限</option>
+                <option value="week">最近一周</option>
+                <option value="month">最近一个月</option>
+                <option value="quarter">最近三个月</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <label>排序方式:</label>
+              <select id="sortFilter">
+                <option value="newest">最新发布</option>
+                <option value="oldest">最早发布</option>
+                <option value="highestBudget">预算最高</option>
+                <option value="lowestBudget">预算最低</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="pagination">
+          <div class="pagination-info">
+            显示第 <span id="startItem">1</span> -
+            <span id="endItem">12</span> 条，共
+            <span id="totalItems">0</span> 条
+          </div>
+          <div class="pagination-controls">
+            <button id="prevPage" disabled>
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <span id="pageNumbers"></span>
+            <button id="nextPage"><i class="fas fa-chevron-right"></i></button>
+          </div>
+        </div> -->
+
+        <div class="order-list">
+          <!-- 商单卡片1 -->
+          <div class="order-card">
+            <div class="card-header">
+              <span class="card-badge badge-new">NEW</span>
+              <div class="order-title">电商平台UI/UX设计与用户体验优化</div>
+              <span class="order-type">设计</span>
+            </div>
+            <div class="card-body">
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">商单状态</div>
+                  <div class="info-value status-active">进行中</div>
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-tags"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">需求类型</div>
+                  <div class="info-value">UI/UX设计</div>
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">预算</div>
+                  <div class="info-value">¥15,000 - ¥25,000</div>
+                </div>
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar progress-active"></div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="publish-time">
+                <i class="far fa-clock"></i>
+                <span>发布时间: 2025-12-18</span>
+              </div>
+              <div class="action-buttons">
+                <button class="bookmark">
+                  <i class="far fa-bookmark"></i>
+                </button>
+                <button class="view-details">查看详情</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 商单卡片2 -->
+          <div class="order-card">
+            <div class="card-header">
+              <div class="order-title">企业官网定制开发与SEO优化</div>
+              <span class="order-type">开发</span>
+            </div>
+            <div class="card-body">
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">商单状态</div>
+                  <div class="info-value status-completed">已结束</div>
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-tags"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">需求类型</div>
+                  <div class="info-value">前端开发</div>
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">预算</div>
+                  <div class="info-value">¥35,000 - ¥50,000</div>
+                </div>
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar progress-completed"></div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="publish-time">
+                <i class="far fa-clock"></i>
+                <span>发布时间: 2025-12-15</span>
+              </div>
+              <div class="action-buttons">
+                <button class="bookmark">
+                  <i class="far fa-bookmark"></i>
+                </button>
+                <button class="view-details">查看详情</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 商单卡片3 -->
+          <div class="order-card">
+            <div class="card-header">
+              <span class="card-badge badge-new">HOT</span>
+              <div class="order-title">品牌推广营销方案与社交媒体运营</div>
+              <span class="order-type">营销</span>
+            </div>
+            <div class="card-body">
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">商单状态</div>
+                  <div class="info-value status-active">进行中</div>
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-tags"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">需求类型</div>
+                  <div class="info-value">数字营销</div>
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">预算</div>
+                  <div class="info-value">¥20,000 - ¥30,000</div>
+                </div>
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar progress-active"></div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="publish-time">
+                <i class="far fa-clock"></i>
+                <span>发布时间: 2025-12-17</span>
+              </div>
+              <div class="action-buttons">
+                <button class="bookmark">
+                  <i class="far fa-bookmark"></i>
+                </button>
+                <button class="view-details">查看详情</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 商单卡片4 -->
+          <div class="order-card">
+            <div class="card-header">
+              <div class="order-title">产品说明书与技术文档撰写</div>
+              <span class="order-type">文案</span>
+            </div>
+            <div class="card-body">
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">商单状态</div>
+                  <div class="info-value status-completed">已结束</div>
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-tags"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">需求类型</div>
+                  <div class="info-value">技术文档</div>
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">预算</div>
+                  <div class="info-value">¥8,000 - ¥12,000</div>
+                </div>
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar progress-completed"></div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="publish-time">
+                <i class="far fa-clock"></i>
+                <span>发布时间: 2025-12-10</span>
+              </div>
+              <div class="action-buttons">
+                <button class="bookmark">
+                  <i class="far fa-bookmark"></i>
+                </button>
+                <button class="view-details">查看详情</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 商单卡片5 -->
+          <div class="order-card">
+            <div class="card-header">
+              <span class="card-badge badge-new">URGENT</span>
+              <div class="order-title">移动端APP开发(iOS/Android)</div>
+              <span class="order-type">开发</span>
+            </div>
+            <div class="card-body">
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">商单状态</div>
+                  <div class="info-value status-active">进行中</div>
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-tags"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">需求类型</div>
+                  <div class="info-value">移动应用开发</div>
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">预算</div>
+                  <div class="info-value">¥50,000 - ¥80,000</div>
+                </div>
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar progress-active"></div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="publish-time">
+                <i class="far fa-clock"></i>
+                <span>发布时间: 2025-12-19</span>
+              </div>
+              <div class="action-buttons">
+                <button class="bookmark">
+                  <i class="far fa-bookmark"></i>
+                </button>
+                <button class="view-details">查看详情</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 商单卡片6 -->
+          <div class="order-card">
+            <div class="card-header">
+              <div class="order-title">社交媒体内容策划与短视频制作</div>
+              <span class="order-type">文案</span>
+            </div>
+            <div class="card-body">
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">商单状态</div>
+                  <div class="info-value status-active">进行中</div>
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-tags"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">需求类型</div>
+                  <div class="info-value">内容创作</div>
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">预算</div>
+                  <div class="info-value">¥12,000 - ¥18,000</div>
+                </div>
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar progress-active"></div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="publish-time">
+                <i class="far fa-clock"></i>
+                <span>发布时间: 2025-12-16</span>
+              </div>
+              <div class="action-buttons">
+                <button class="bookmark">
+                  <i class="far fa-bookmark"></i>
+                </button>
+                <button class="view-details">查看详情</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 商单卡片7 -->
+          <div class="order-card">
+            <div class="card-header">
+              <div class="order-title">企业品牌形象设计与VI系统</div>
+              <span class="order-type">设计</span>
+            </div>
+            <div class="card-body">
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">商单状态</div>
+                  <div class="info-value status-active">待开始</div>
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-tags"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">需求类型</div>
+                  <div class="info-value">平面设计</div>
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">预算</div>
+                  <div class="info-value">¥25,000 - ¥40,000</div>
+                </div>
+              </div>
+              <div class="progress-container">
+                <div
+                  class="progress-bar progress-active"
+                  style="width: 10%"
+                ></div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="publish-time">
+                <i class="far fa-clock"></i>
+                <span>发布时间: 2025-12-19</span>
+              </div>
+              <div class="action-buttons">
+                <button class="bookmark">
+                  <i class="far fa-bookmark"></i>
+                </button>
+                <button class="view-details">查看详情</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 商单卡片8 -->
+          <div class="order-card">
+            <div class="card-header">
+              <span class="card-badge badge-new">TOP</span>
+              <div class="order-title">多语言网站翻译与本地化服务</div>
+              <span class="order-type">翻译</span>
+            </div>
+            <div class="card-body">
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">商单状态</div>
+                  <div class="info-value status-active">进行中</div>
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-tags"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">需求类型</div>
+                  <div class="info-value">翻译服务</div>
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">预算</div>
+                  <div class="info-value">¥18,000 - ¥30,000</div>
+                </div>
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar progress-active"></div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="publish-time">
+                <i class="far fa-clock"></i>
+                <span>发布时间: 2025-12-18</span>
+              </div>
+              <div class="action-buttons">
+                <button class="bookmark">
+                  <i class="far fa-bookmark"></i>
+                </button>
+                <button class="view-details">查看详情</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pagination">
+          <div class="pagination-info">
+            显示第 <span id="startItem">1</span> -
+            <span id="endItem">12</span> 条，共
+            <span id="totalItems">0</span> 条
+          </div>
+          <div class="pagination-controls">
+            <button id="prevPage" disabled>
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <span id="pageNumbers"></span>
+            <button id="nextPage"><i class="fas fa-chevron-right"></i></button>
+          </div>
+        </div>
+
+        <!-- 接单结果统计表 -->
+        <div class="table-section">
+          <h2 class="table-title">
+            <i class="fas fa-table"></i>
+            <span>这些同学正在接取任务</span>
+          </h2>
+          <div class="table-container">
+            <div class="scroll-wrapper">
+              <table id="resultTable" class="result-table">
+                <!-- 表头将通过JavaScript动态生成 -->
+              </table>
+              <div class="scroll-container">
+                <table class="result-table result-table-scroll">
+                  <!-- 表体将通过JavaScript动态生成 -->
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // CSV数据解析和加载
+      async function loadCSVData() {
+        try {
+          // 从任务统计表.csv读取数据
+          const response = await fetch("data/任务统计表aigc.csv");
+
+          // Check if the response is ok (status code 200-299)
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const csvText = await response.text();
+          return parseCSV(csvText);
+        } catch (error) {
+          console.error("加载CSV数据失败:", error);
+
+          // Show an error message to the user
+          const orderList = document.querySelector(".order-list");
+          if (orderList) {
+            orderList.innerHTML = `
+              <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h3 style="color: #e74c3c; margin-bottom: 10px;"><i class="fas fa-exclamation-triangle"></i> 数据加载失败</h3>
+                <p style="color: #7f8c8d; margin-bottom: 20px;">无法加载商单数据，请检查CSV文件是否存在或网络连接是否正常</p>
+                <p style="color: #95a5a6; font-size: 14px;">错误详情: ${error.message}</p>
+              </div>
+            `;
+          }
+
+          return [];
+        }
+      }
+
+      function parseCSV(csvText) {
+        const lines = csvText
+          .split(/\r?\n/)
+          .filter((line) => line.trim() !== "");
+        if (lines.length === 0) return [];
+
+        // 手动定义表头，因为CSV第一行的格式可能有问题
+        const headers = [
+          "单子名称",
+          "任务类型",
+          "订单渠道",
+          "接单结果",
+          "金额",
+          "订单完成日期",
+          "接单人员",
+          "截图",
+          "交付学员结果",
+          "学员实收金额",
+        ];
+
+        // 定义需要的列映射，将任务统计表的列映射到之前的字段名
+        const requiredColumns = [
+          "单子名称",
+          "任务类型",
+          "接单结果",
+          "金额",
+          "订单完成日期",
+        ];
+
+        // 检查必需的列是否存在
+        const missingColumns = requiredColumns.filter(
+          (column) => !headers.includes(column)
+        );
+
+        if (missingColumns.length > 0) {
+          console.error("任务统计表缺少必需的列:", missingColumns);
+          alert(`任务统计表缺少必需的列: ${missingColumns.join(", ")}`);
+          return [];
+        }
+
+        const data = [];
+
+        // 从第2行开始解析数据（跳过表头）
+        for (let i = 1; i < lines.length; i++) {
+          const values = parseCSVLine(lines[i]);
+          if (values.length >= requiredColumns.length) {
+            const row = {};
+
+            // 直接使用解析出的表头来构建行数据
+            headers.forEach((header, index) => {
+              row[header] = values[index] || "";
+            });
+
+            // 只添加有实际数据的行
+            if (row["单子名称"] && row["单子名称"].trim() !== "") {
+              // 添加商单id（使用行号作为id）
+              row["商单id"] = i;
+              // 添加商单标题（对应单子名称）
+              row["商单标题"] = row["单子名称"];
+              // 添加需求类型（对应任务类型）
+              row["需求类型"] = row["任务类型"];
+              // 添加商单状态（对应接单结果）
+              row["商单状态"] = row["接单结果"];
+              // 添加预算范围（对应金额）
+              row["预算范围"] = row["金额"];
+              // 添加发布时间（对应订单完成日期）
+              row["发布时间"] = row["订单完成日期"];
+
+              data.push(row);
+            }
+          } else {
+            // Log a warning if the row doesn't have enough columns
+            console.warn(`行 ${i + 1} 缺少必需的列数据，已跳过:`, lines[i]);
+          }
+        }
+
+        return data;
+      }
+
+      // Helper function to properly parse CSV lines, handling quoted fields
+      function parseCSVLine(line) {
+        const result = [];
+        let current = "";
+        let inQuotes = false;
+
+        for (let i = 0; i < line.length; i++) {
+          const char = line[i];
+          const nextChar = line[i + 1] || "";
+
+          if (char === '"') {
+            // Check if this is an escaped quote ("")
+            if (nextChar === '"') {
+              current += '"';
+              i++; // Skip the next quote
+            } else {
+              // Toggle the inQuotes flag
+              inQuotes = !inQuotes;
+            }
+          } else if (char === "," && !inQuotes) {
+            // If comma and not in quotes, this is a field separator
+            result.push(current.trim());
+            current = "";
+          } else {
+            // Add character to current field
+            current += char;
+          }
+        }
+
+        // Add the last field
+        result.push(current.trim());
+
+        return result;
+      }
+
+      // 渲染订单卡片
+      function renderOrderCards(orders) {
+        const orderList = document.querySelector(".order-list");
+        orderList.innerHTML = ""; // 清空现有内容
+
+        // Apply sorting based on the selected sort option
+        const sortValue = document.getElementById("sortFilter").value;
+        const sortedOrders = sortOrders(orders, sortValue);
+
+        sortedOrders.forEach((order) => {
+          const orderCard = document.createElement("div");
+          orderCard.className = "order-card";
+
+          // 确定进度状态类 - 根据接单结果确定
+          let progressClass = "progress-active";
+          if (order["商单状态"] && order["商单状态"].includes("已完成")) {
+            progressClass = "progress-completed";
+          } else if (
+            order["商单状态"] &&
+            order["商单状态"].includes("制作中")
+          ) {
+            progressClass = "progress-active";
+          } else {
+            progressClass = "progress-active";
+          }
+
+          // 确定状态文本和类
+          let statusClass = "status-active";
+          if (order["商单状态"] && order["商单状态"].includes("已完成")) {
+            statusClass = "status-completed";
+          } else if (
+            order["商单状态"] &&
+            order["商单状态"].includes("制作中")
+          ) {
+            statusClass = "status-active";
+          } else {
+            statusClass = "status-pending";
+          }
+
+          orderCard.innerHTML = `
+            <div class="card-header">
+              <div class="order-title">${order["商单标题"]}</div>
+              <span class="order-type">${order["需求类型"]}</span>
+            </div>
+            <div class="card-body">
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">商单状态</div>
+                  <div class="info-value ${statusClass}">${
+            order["商单状态"] || "未知状态"
+          }</div>
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-tags"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">任务类型</div>
+                  <div class="info-value">${order["需求类型"]}</div>
+                </div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="info-content">
+                  <div class="info-label">金额</div>
+                  <div class="info-value">¥${order["预算范围"]}</div>
+                </div>
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar ${progressClass}"></div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="publish-time">
+                <i class="far fa-clock"></i>
+                <span>发布日期: ${
+                  formatDate(order["发布时间"]) || "未完成"
+                }</span>
+              </div>
+              <div class="action-buttons">
+                <button class="view-details" data-id="${
+                  order["商单id"]
+                }">查看详情</button>
+              </div>
+            </div>
+          `;
+
+          orderList.appendChild(orderCard);
+        });
+
+        // 重新绑定事件监听器
+        bindEventListeners();
+      }
+
+      // Sort orders based on the selected sort option
+      function sortOrders(orders, sortValue) {
+        // Create a copy of the orders array to avoid modifying the original
+        const sortedOrders = [...orders];
+
+        // Common sort function that first sorts by status (制作中 > 其他), then by the specified criteria
+        function commonSort(a, b) {
+          // First sort by status: all "制作中" tasks come first
+          const isAInProgress =
+            a["商单状态"] && a["商单状态"].includes("制作中");
+          const isBInProgress =
+            b["商单状态"] && b["商单状态"].includes("制作中");
+
+          if (isAInProgress !== isBInProgress) {
+            return isAInProgress ? -1 : 1; // 制作中任务排在前面
+          }
+
+          // Then sort by the specified criteria
+          switch (sortValue) {
+            case "newest":
+              const dateA = new Date(a["发布时间"] || 0);
+              const dateB = new Date(b["发布时间"] || 0);
+              return dateB - dateA; // Descending order (newest first)
+
+            case "oldest":
+              const oldDateA = new Date(a["发布时间"] || 0);
+              const oldDateB = new Date(b["发布时间"] || 0);
+              return oldDateA - oldDateB; // Ascending order (oldest first)
+
+            case "highestBudget":
+              const budgetA = extractNumericBudget(a["预算范围"]);
+              const budgetB = extractNumericBudget(b["预算范围"]);
+              return budgetB - budgetA; // Descending order (highest first)
+
+            case "lowestBudget":
+              const lowBudgetA = extractNumericBudget(a["预算范围"]);
+              const lowBudgetB = extractNumericBudget(b["预算范围"]);
+              return lowBudgetA - lowBudgetB; // Ascending order (lowest first)
+
+            default:
+              // Default to newest if no valid sort option
+              const defaultDateA = new Date(a["发布时间"] || 0);
+              const defaultDateB = new Date(b["发布时间"] || 0);
+              return defaultDateB - defaultDateA; // Descending order (newest first)
+          }
+        }
+
+        return sortedOrders.sort(commonSort);
+      }
+
+      // Helper function to extract numeric budget value from range string
+      function extractNumericBudget(budgetStr) {
+        if (!budgetStr) return 0;
+
+        // Handle different budget formats like "¥5,000 - ¥10,000" or "70~100"
+        if (budgetStr.includes(" - ")) {
+          // Format like "¥5,000 - ¥10,000", take the average
+          const range = budgetStr.replace(/[¥,]/g, "").split(" - ");
+          const min = parseFloat(range[0]) || 0;
+          const max = parseFloat(range[1]) || 0;
+          return (min + max) / 2;
+        } else if (budgetStr.includes("~")) {
+          // Format like "70~100", take the average
+          const range = budgetStr.split("~");
+          const min = parseFloat(range[0]) || 0;
+          const max = parseFloat(range[1]) || 0;
+          return (min + max) / 2;
+        } else {
+          // Single value like "¥10000+" or "10000"
+          return parseFloat(budgetStr.replace(/[¥,+]/g, "")) || 0;
+        }
+      }
+
+      // 生成需求类型筛选选项
+      function generateTypeFilterOptions(orders) {
+        const typeFilter = document.getElementById("typeFilter");
+
+        // 清空现有选项（保留"全部类型"选项）
+        typeFilter.innerHTML = '<option value="">全部类型</option>';
+
+        // 收集所有唯一的需求类型
+        const uniqueTypes = [
+          ...new Set(orders.map((order) => order["需求类型"])),
+        ];
+
+        // 按字母顺序排序
+        uniqueTypes.sort();
+
+        // 为每个唯一类型创建选项
+        uniqueTypes.forEach((type) => {
+          if (type) {
+            // 确保类型值不为空
+            const option = document.createElement("option");
+            option.value = type;
+            option.textContent = type;
+            typeFilter.appendChild(option);
+          }
+        });
+      }
+
+      // 格式化日期函数
+      function formatDate(dateStr) {
+        // 将 "2025/11/26" 格式转换为 "2025-11-26" 格式
+        if (dateStr) {
+          return dateStr.replace(/\//g, "-");
+        }
+        return "";
+      }
+
+      // 订单卡片点击事件
+      function bindEventListeners() {
+        // 订单卡片点击事件
+        document.querySelectorAll(".order-card").forEach((card) => {
+          card.addEventListener("click", function (e) {
+            // 如果点击的是按钮，则不触发卡片整体点击事件
+            if (e.target.closest("button")) {
+              return;
+            }
+
+            // 跳转到详情页面，获取订单ID
+            const viewButton = this.querySelector(".view-details");
+            const orderId = viewButton.getAttribute("data-id");
+            window.location.href = `detail.html?id=${orderId}`;
+          });
+        });
+
+        // 查看详情按钮点击事件
+        document.querySelectorAll(".view-details").forEach((button) => {
+          button.addEventListener("click", function () {
+            const orderId = this.getAttribute("data-id");
+            // 跳转到详情页面，传递订单ID
+            window.location.href = `detail.html?id=${orderId}`;
+          });
+        });
+
+        // 搜索功能
+        document
+          .querySelector(".search-bar button")
+          .addEventListener("click", function () {
+            const searchTerm = document
+              .querySelector(".search-bar input")
+              .value.toLowerCase();
+            const orderCards = document.querySelectorAll(".order-card");
+
+            orderCards.forEach((card) => {
+              const title = card
+                .querySelector(".order-title")
+                .textContent.toLowerCase();
+              if (title.includes(searchTerm)) {
+                card.style.display = "flex";
+              } else {
+                card.style.display = "none";
+              }
+            });
+          });
+
+        // 回车搜索
+        document
+          .querySelector(".search-bar input")
+          .addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+              document.querySelector(".search-bar button").click();
+            }
+          });
+
+        // 筛选功能
+        function applyFilters() {
+          // Instead of just hiding/showing cards, we need to re-render the orders with current filters
+          // Get all orders (we'll need to store them globally or fetch again)
+          // For now, we'll use a global variable to store the original orders
+          if (window.allOrders) {
+            applyFiltersAndRender(window.allOrders);
+          }
+        }
+
+        // 为分页按钮添加事件监听器
+        document
+          .getElementById("prevPage")
+          .addEventListener("click", function () {
+            if (currentPage > 1) {
+              goToPage(currentPage - 1);
+            }
+          });
+
+        document
+          .getElementById("nextPage")
+          .addEventListener("click", function () {
+            const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+            if (currentPage < totalPages) {
+              goToPage(currentPage + 1);
+            }
+          });
+
+        // Apply filters and re-render orders
+        function applyFiltersAndRender(allOrders) {
+          const typeValue = document.getElementById("typeFilter").value;
+          const statusValue = document.getElementById("statusFilter").value;
+          const budgetValue = document.getElementById("budgetFilter").value;
+          const timeValue = document.getElementById("timeFilter").value;
+          const sortValue = document.getElementById("sortFilter").value;
+
+          console.log(
+            "筛选条件 - 类型: " +
+              (typeValue || "全部") +
+              ", 状态: " +
+              (statusValue || "全部") +
+              ", 预算: " +
+              (budgetValue || "不限")
+          );
+
+          // Filter the orders
+          const filteredOrders = allOrders.filter((order) => {
+            let showOrder = true;
+
+            // Type filtering
+            if (typeValue && order["需求类型"] !== typeValue) {
+              showOrder = false;
+            }
+
+            // Status filtering
+            if (statusValue && order["商单状态"] !== statusValue) {
+              showOrder = false;
+            }
+
+            // Budget filtering
+            if (budgetValue) {
+              // Extract budget values for comparison
+              let minBudget = 0;
+              let maxBudget = Infinity;
+
+              const cardBudget = order["预算范围"];
+              if (cardBudget && cardBudget.includes(" - ")) {
+                // Range format like "¥5,000 - ¥10,000"
+                const range = cardBudget.split(" - ");
+                minBudget = parseFloat(range[0].replace(/[¥,]/g, "")) || 0;
+                maxBudget =
+                  parseFloat(range[1].replace(/[¥,]/g, "")) || Infinity;
+              } else {
+                // Single value or range format like "¥10000+"
+                const budgetStr = cardBudget.replace(/[¥,+]/g, "").trim();
+                if (budgetStr.includes("~")) {
+                  // Format like "70~100"
+                  const range = budgetStr.split("~");
+                  minBudget = parseFloat(range[0]) || 0;
+                  maxBudget = parseFloat(range[1]) || Infinity;
+                } else {
+                  // Single value
+                  minBudget = parseFloat(budgetStr) || 0;
+                  maxBudget = minBudget;
+                }
+              }
+
+              let budgetMatch = true;
+              if (budgetValue === "low") {
+                // ¥0 - ¥5,000
+                budgetMatch = maxBudget <= 5000;
+              } else if (budgetValue === "medium") {
+                // ¥5,000 - ¥20,000
+                budgetMatch = minBudget >= 5000 && maxBudget <= 20000;
+              } else if (budgetValue === "high") {
+                // ¥20,000+
+                budgetMatch = minBudget >= 20000;
+              }
+
+              if (!budgetMatch) {
+                showOrder = false;
+              }
+            }
+
+            // Time filtering
+            if (timeValue) {
+              const orderDate = new Date(order["发布时间"]);
+              const currentDate = new Date();
+              let timeMatch = true;
+
+              if (timeValue === "week") {
+                // Last week
+                const weekAgo = new Date();
+                weekAgo.setDate(currentDate.getDate() - 7);
+                timeMatch = orderDate >= weekAgo && orderDate <= currentDate;
+              } else if (timeValue === "month") {
+                // Last month
+                const monthAgo = new Date();
+                monthAgo.setMonth(currentDate.getMonth() - 1);
+                timeMatch = orderDate >= monthAgo && orderDate <= currentDate;
+              } else if (timeValue === "quarter") {
+                // Last quarter
+                const quarterAgo = new Date();
+                quarterAgo.setMonth(currentDate.getMonth() - 3);
+                timeMatch = orderDate >= quarterAgo && orderDate <= currentDate;
+              }
+
+              if (!timeMatch) {
+                showOrder = false;
+              }
+            }
+
+            return showOrder;
+          });
+
+          // Apply sorting to the filtered orders
+          const sortedFilteredOrders = sortOrders(filteredOrders, sortValue);
+
+          // Render the filtered and sorted orders with pagination
+          currentPage = 1; // Reset to first page when filters change
+          renderOrderCardsWithPagination(sortedFilteredOrders);
+          renderPaginationControls(sortedFilteredOrders.length);
+        }
+
+        // 为所有筛选下拉菜单添加事件监听器
+        document
+          .getElementById("typeFilter")
+          .addEventListener("change", applyFilters);
+        document
+          .getElementById("statusFilter")
+          .addEventListener("change", applyFilters);
+        document
+          .getElementById("budgetFilter")
+          .addEventListener("change", applyFilters);
+        document
+          .getElementById("timeFilter")
+          .addEventListener("change", applyFilters);
+        document
+          .getElementById("sortFilter")
+          .addEventListener("change", function () {
+            currentPage = 1; // 重置到第一页
+            applyFilters();
+          });
+
+        // 重置筛选功能
+        document
+          .querySelector(".filter-actions button")
+          .addEventListener("click", function () {
+            document.getElementById("typeFilter").value = "";
+            document.getElementById("statusFilter").value = "";
+            document.getElementById("budgetFilter").value = "";
+            document.getElementById("timeFilter").value = "";
+            document.getElementById("sortFilter").value = "newest"; // 默认按最新发布排序
+
+            // 重新应用筛选（显示所有订单）
+            if (window.allOrders) {
+              currentPage = 1;
+              renderOrderCardsWithPagination(window.allOrders);
+              renderPaginationControls(window.allOrders.length);
+              updateStats(window.allOrders); // 更新统计
+            }
+          });
+      }
+
+      // 分页相关变量
+      let currentPage = 1;
+      const itemsPerPage = 12;
+      let filteredOrders = [];
+      let allOrders = [];
+
+      // 分页控制函数
+      function renderPaginationControls(totalItems) {
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+        const startItem = (currentPage - 1) * itemsPerPage + 1;
+        let endItem = currentPage * itemsPerPage;
+        if (endItem > totalItems) endItem = totalItems;
+
+        // 更新分页信息
+        document.getElementById("startItem").textContent = startItem;
+        document.getElementById("endItem").textContent = endItem;
+        document.getElementById("totalItems").textContent = totalItems;
+
+        // 更新分页按钮
+        const prevButton = document.getElementById("prevPage");
+        const nextButton = document.getElementById("nextPage");
+        const pageNumbersContainer = document.getElementById("pageNumbers");
+
+        prevButton.disabled = currentPage === 1;
+        nextButton.disabled = currentPage === totalPages || totalPages === 0;
+
+        // 生成页码按钮
+        pageNumbersContainer.innerHTML = "";
+        const startPage = Math.max(1, currentPage - 2);
+        const endPage = Math.min(totalPages, currentPage + 2);
+
+        for (let i = startPage; i <= endPage; i++) {
+          const pageButton = document.createElement("button");
+          pageButton.textContent = i;
+          pageButton.classList.add("page-number");
+          if (i === currentPage) {
+            pageButton.classList.add("active");
+          }
+          pageButton.addEventListener("click", () => {
+            goToPage(i);
+          });
+          pageNumbersContainer.appendChild(pageButton);
+        }
+
+        // 如果不是第一页，添加首页按钮
+        if (startPage > 1) {
+          const firstPageButton = document.createElement("button");
+          firstPageButton.textContent = "1";
+          firstPageButton.addEventListener("click", () => goToPage(1));
+          pageNumbersContainer.insertBefore(
+            firstPageButton,
+            pageNumbersContainer.firstChild
+          );
+
+          // 如果首页和当前页之间有间隔，添加省略号
+          if (startPage > 2) {
+            const ellipsis = document.createElement("span");
+            ellipsis.textContent = "...";
+            ellipsis.style.padding = "0 5px";
+            pageNumbersContainer.insertBefore(
+              ellipsis,
+              pageNumbersContainer.firstChild.nextSibling
+            );
+          }
+        }
+
+        // 如果不是最后一页，添加末页按钮
+        if (endPage < totalPages) {
+          // 如果末页和当前页之间有间隔，添加省略号
+          if (endPage < totalPages - 1) {
+            const ellipsis = document.createElement("span");
+            ellipsis.textContent = "...";
+            ellipsis.style.padding = "0 5px";
+            pageNumbersContainer.appendChild(ellipsis);
+          }
+
+          const lastPageButton = document.createElement("button");
+          lastPageButton.textContent = totalPages;
+          lastPageButton.addEventListener("click", () => goToPage(totalPages));
+          pageNumbersContainer.appendChild(lastPageButton);
+        }
+      }
+
+      // 跳转到指定页
+      function goToPage(page) {
+        currentPage = page;
+        renderOrderCardsWithPagination(filteredOrders);
+        renderPaginationControls(filteredOrders.length);
+      }
+
+      // 更新统计数据
+      function updateStats(orders) {
+        const totalOrders = orders.length;
+        const activeOrders = orders.filter(
+          (order) =>
+            order["商单状态"] &&
+            (order["商单状态"].includes("制作中") ||
+              order["商单状态"].includes("待开始"))
+        ).length;
+        const completedOrders = orders.filter(
+          (order) => order["商单状态"] && order["商单状态"].includes("已完成")
+        ).length;
+
+        document.querySelector(
+          ".stat-card:nth-child(1) .stat-info h3"
+        ).textContent = totalOrders;
+        document.querySelector(
+          ".stat-card:nth-child(2) .stat-info h3"
+        ).textContent = activeOrders;
+        document.querySelector(
+          ".stat-card:nth-child(3) .stat-info h3"
+        ).textContent = completedOrders;
+      }
+
+      // 带分页的订单渲染
+      function renderOrderCardsWithPagination(orders) {
+        // 先对整个数据集进行排序，确保所有制作中的任务都集中在前面
+        const sortValue = document.getElementById("sortFilter").value;
+        const sortedOrders = sortOrders(orders, sortValue);
+
+        filteredOrders = sortedOrders;
+        const totalPages = Math.ceil(sortedOrders.length / itemsPerPage);
+
+        // 确保当前页在有效范围内
+        if (currentPage > totalPages && totalPages > 0) {
+          currentPage = totalPages;
+        } else if (totalPages === 0) {
+          currentPage = 1;
+        }
+
+        // 计算当前页的数据
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = Math.min(
+          startIndex + itemsPerPage,
+          sortedOrders.length
+        );
+        const currentOrders = sortedOrders.slice(startIndex, endIndex);
+
+        // 渲染当前页的订单
+        renderOrderCards(currentOrders);
+
+        // 更新统计数据
+        updateStats(orders);
+      }
+
+      // 页面加载完成后加载数据
+      document.addEventListener("DOMContentLoaded", async function () {
+        const orders = await loadCSVData();
+        if (orders.length > 0) {
+          // Store the original orders in a global variable for filtering
+          window.allOrders = orders;
+
+          // 动态生成需求类型下拉选项
+          generateTypeFilterOptions(orders);
+
+          filteredOrders = orders; // 初始化过滤后的订单
+          renderOrderCardsWithPagination(orders);
+          renderPaginationControls(orders.length);
+
+          // 初始化统计数据
+          updateStats(orders);
+        }
+
+        // 加载并渲染接单结果统计表
+        await loadAndRenderResultTable();
+      });
+
+      // 加载并渲染接单结果统计表
+      async function loadAndRenderResultTable() {
+        try {
+          const response = await fetch("data/接单结果统计表aigc.csv");
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const csvText = await response.text();
+          const tableData = parseResultCSV(csvText);
+          renderResultTable(tableData);
+        } catch (error) {
+          console.error("加载接单结果统计表失败:", error);
+          const tableContainer = document.querySelector(".table-container");
+          tableContainer.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #e74c3c;">
+              <h3><i class="fas fa-exclamation-triangle"></i> 数据加载失败</h3>
+              <p>无法加载接单结果统计表，请检查文件是否存在或网络连接是否正常</p>
+              <p style="font-size: 14px; color: #95a5a6; margin-top: 10px;">错误详情: ${error.message}</p>
+            </div>
+          `;
+        }
+      }
+
+      // 解析接单结果统计表CSV
+      function parseResultCSV(csvText) {
+        const lines = csvText.split(/\r?\n/);
+        if (lines.length === 0) return { headers: [], data: [] };
+
+        // 定义不包含截图列和序号列的表头
+        const headers = [
+          "接单类型",
+          "学员姓名",
+          "学员接单时间",
+          "接单结果",
+          "金额",
+          "辅导老师",
+        ];
+
+        // 处理学员姓名，支持多种格式转换为"X同学"格式
+        function formatStudentName(nameStr) {
+          if (!nameStr || nameStr.trim() === "") {
+            return "";
+          }
+
+          // 处理多个学员的情况，按换行或多个空格分割
+          const students = nameStr
+            .split(/[\r\n\s]+/)
+            .filter((student) => student.trim() !== "");
+
+          return students
+            .map((student) => {
+              // 提取中文姓名的第一个字
+              // 支持格式：
+              // 1. XH118104008_胡鑫 → 胡同学
+              // 2. 1168-李治豪 → 李同学
+              // 3. 1189余晨海 → 余同学
+              // 4. 骑着蜗牛追火箭 → 骑同学
+              // 5. 多个学员的情况，按空格分割
+              let chineseName = student;
+
+              // 处理带下划线的格式：XH118104008_胡鑫 → 胡鑫
+              if (chineseName.includes("_")) {
+                chineseName = chineseName.split("_")[1];
+              }
+
+              // 处理带横线的格式：1168-李治豪 → 李治豪
+              if (chineseName.includes("-")) {
+                chineseName = chineseName.split("-")[1];
+              }
+
+              // 处理纯数字+姓名格式：1189余晨海 → 余晨海
+              chineseName = chineseName.replace(/^\d+/, "");
+
+              if (chineseName && chineseName.length > 0) {
+                return `${chineseName.charAt(0)}同学`;
+              }
+              return "";
+            })
+            .filter((name) => name !== "")
+            .join(" ");
+        }
+
+        const data = [];
+        // 从第2行开始解析数据
+        for (let i = 2; i < lines.length; i++) {
+          const values = parseCSVLine(lines[i]);
+
+          // 过滤掉完全空的行
+          const isEmptyRow = values.every((val) => val.trim() === "");
+          if (isEmptyRow) continue;
+
+          // 确保有足够的数据列
+          if (values.length < 8) continue;
+
+          // 映射数据到表头，适配新的CSV格式
+          const row = {};
+          headers.forEach((header) => {
+            let value = "";
+            switch (header) {
+              case "接单类型":
+                value = values[1] ? values[1].trim() : "";
+                break;
+              case "学员姓名":
+                value = values[3] ? values[3].trim() : "";
+                value = formatStudentName(value);
+                break;
+              case "学员接单时间":
+                value = values[4] ? values[4].trim() : "";
+                break;
+              case "接单结果":
+                value = values[5] ? values[5].trim() : "";
+                break;
+              case "金额":
+                value = values[6] ? values[6].trim() : "";
+                break;
+              case "辅导老师":
+                value = values[7] ? values[7].trim() : "";
+                break;
+            }
+            row[header] = value;
+          });
+
+          // 只添加有实际数据的行
+          if (row["接单类型"] || row["学员姓名"] || row["接单结果"]) {
+            data.push(row);
+          }
+        }
+        return { headers, data };
+      }
+
+      // 渲染接单结果统计表
+      function renderResultTable(tableData) {
+        const { headers, data } = tableData;
+
+        // 1. 渲染固定表头到第一个表格
+        const headerTable = document.getElementById("resultTable");
+        let theadHTML = `<thead><tr>`;
+        headers.forEach((header) => {
+          theadHTML += `<th>${header}</th>`;
+        });
+        theadHTML += `</tr></thead>`;
+        headerTable.innerHTML = theadHTML;
+
+        // 2. 生成表体HTML
+        let tbodyHTML = `<tbody>`;
+        data.forEach((row) => {
+          tbodyHTML += `<tr>`;
+          headers.forEach((header) => {
+            tbodyHTML += `<td>${row[header] || ""}</td>`;
+          });
+          tbodyHTML += `</tr>`;
+        });
+        tbodyHTML += `</tbody>`;
+
+        // 3. 渲染滚动表体到第二个表格，复制两份数据实现无缝滚动
+        const scrollTable = document.querySelector(".result-table-scroll");
+        scrollTable.innerHTML = tbodyHTML + tbodyHTML;
+      }
+    </script>
+  </body>
+</html>
